@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina6_3" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="YPCounter" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" semanticContentAttribute="spatial" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1yM-bU-zY5">
+                                <rect key="frame" x="16" y="400" width="370" height="89.666666666666686"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="75"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" axis="vertical" alignment="center" spacing="103" translatesAutoresizingMaskIntoConstraints="NO" id="VAu-Vr-HB4">
+                                <rect key="frame" x="20" y="604.66666666666663" width="362" height="241.33333333333337"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="ddT-pd-p2s">
+                                        <rect key="frame" x="0.0" y="0.0" width="362" height="78.333333333333329"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X3M-PJ-urO">
+                                                <rect key="frame" x="0.0" y="0.0" width="151" height="78.333333333333329"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="-" buttonSize="large">
+                                                    <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="40"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="counterMinusButtonDidTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="mfc-ZQ-n7i"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8aI-fa-s3U">
+                                                <rect key="frame" x="211" y="0.0" width="151" height="78.333333333333329"/>
+                                                <state key="normal" title="Button"/>
+                                                <buttonConfiguration key="configuration" style="filled" title="+" buttonSize="large">
+                                                    <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="40"/>
+                                                    <color key="baseBackgroundColor" systemColor="systemRedColor"/>
+                                                </buttonConfiguration>
+                                                <connections>
+                                                    <action selector="counterPlusButtonDidTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="6CQ-yV-MEK"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="X3M-PJ-urO" firstAttribute="height" secondItem="8aI-fa-s3U" secondAttribute="height" id="Rgy-h4-yim"/>
+                                            <constraint firstItem="X3M-PJ-urO" firstAttribute="width" secondItem="8aI-fa-s3U" secondAttribute="width" id="mKE-3W-tNY"/>
+                                        </constraints>
+                                    </stackView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="fill" contentVerticalAlignment="fill" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YVp-pn-nGz">
+                                        <rect key="frame" x="102.66666666666669" y="181.33333333333337" width="157" height="60"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="YVp-pn-nGz" secondAttribute="height" multiplier="157:60" id="ZMr-Do-9yB"/>
+                                        </constraints>
+                                        <state key="normal" title="Button"/>
+                                        <buttonConfiguration key="configuration" style="filled" title="Очистить" buttonSize="large" titleAlignment="center">
+                                            <fontDescription key="titleFontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="25"/>
+                                        </buttonConfiguration>
+                                        <connections>
+                                            <action selector="counterResetButtonDidTapped" destination="BYZ-38-t0r" eventType="touchUpInside" id="AYv-ds-Rvu"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="YVp-pn-nGz" secondAttribute="bottom" id="Cku-EG-hkX"/>
+                                    <constraint firstItem="ddT-pd-p2s" firstAttribute="top" secondItem="VAu-Vr-HB4" secondAttribute="top" id="NJh-dR-zj9"/>
+                                    <constraint firstItem="YVp-pn-nGz" firstAttribute="centerX" secondItem="VAu-Vr-HB4" secondAttribute="centerX" id="WNg-lA-w7F"/>
+                                    <constraint firstItem="ddT-pd-p2s" firstAttribute="leading" secondItem="VAu-Vr-HB4" secondAttribute="leading" id="pxF-C6-WYv"/>
+                                    <constraint firstAttribute="trailing" secondItem="ddT-pd-p2s" secondAttribute="trailing" id="tYx-SQ-bdl"/>
+                                </constraints>
+                            </stackView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" editable="NO" text="История изменений" textAlignment="center" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UN8-q2-obx">
+                                <rect key="frame" x="20" y="62" width="362" height="306"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="UN8-q2-obx" secondAttribute="height" multiplier="181:153" id="txY-ZR-nGS"/>
+                                </constraints>
+                                <color key="textColor" systemColor="labelColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" calendarEvent="YES"/>
+                            </textView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="UN8-q2-obx" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="0KI-la-hYS"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="UN8-q2-obx" secondAttribute="trailing" constant="20" id="10y-eA-z0I"/>
+                            <constraint firstItem="VAu-Vr-HB4" firstAttribute="top" secondItem="1yM-bU-zY5" secondAttribute="bottom" constant="115" id="1s7-qv-Xfy"/>
+                            <constraint firstItem="VAu-Vr-HB4" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="JVJ-Cc-GPZ"/>
+                            <constraint firstItem="1yM-bU-zY5" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Zeu-8O-rNs"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="VAu-Vr-HB4" secondAttribute="trailing" constant="20" id="bcJ-rK-lj1"/>
+                            <constraint firstItem="1yM-bU-zY5" firstAttribute="top" secondItem="UN8-q2-obx" secondAttribute="bottom" constant="32" id="feR-3h-nMK"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="1yM-bU-zY5" secondAttribute="trailing" constant="16" id="gXt-cx-cJ2"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="VAu-Vr-HB4" secondAttribute="bottom" constant="-6" id="nAT-Hx-90z"/>
+                            <constraint firstItem="UN8-q2-obx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="yrZ-vq-fzn"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="counterLabel" destination="1yM-bU-zY5" id="8Ah-lz-z10"/>
+                        <outlet property="counterMinusButton" destination="X3M-PJ-urO" id="ka1-xv-UmK"/>
+                        <outlet property="counterPlusButton" destination="8aI-fa-s3U" id="8Lq-Z5-Yhf"/>
+                        <outlet property="counterResetButton" destination="YVp-pn-nGz" id="MZo-G4-lbl"/>
+                        <outlet property="historyTextView" destination="UN8-q2-obx" id="oWK-2K-Kth"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="111.94029850746269" y="-28.83295194508009"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
