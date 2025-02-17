@@ -1,14 +1,18 @@
-
+// MARK: - создал mutable структуру как тип для ведения текущей статистики
 struct GameState {
-    let totalQuestions: Int
-    var currentIndex: Int
-    var correctAnswers: Int
-    
-    init(totalQuestions: Int = 0, currentIndex: Int = 0, correctAnswers: Int = 0) {
-        self.totalQuestions = totalQuestions
-        self.currentIndex = currentIndex
-        self.correctAnswers = correctAnswers
-    }
+    private(set) var correctAnswers: Int = 0
+    private(set) var questionIndex: Int = 0
 }
 
-extension GameState: Storable {}
+extension GameState {
+    mutating func incCorrectAnswers() {
+        correctAnswers += 1
+    }
+    mutating func incCurrentQuestionIndex() {
+        questionIndex += 1
+    }
+    mutating func reset() {
+        correctAnswers = 0
+        questionIndex = 0
+    }
+}

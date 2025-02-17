@@ -2,10 +2,12 @@ import UIKit
 
 protocol AlertPresenterProtocol {
     func present(
-        report: String,
+        currentGame: GameState,
+        bestGame: GameResult,
+        gamesCount: Int,
+        accuracy: Double,
         kind: AlertKind,
         present: (UIViewController, Bool, (() -> Void)?) -> Void,
-        showUI: @escaping () -> (),
         _ completion: (() -> Void)?
     )
 }
