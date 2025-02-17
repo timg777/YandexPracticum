@@ -60,6 +60,14 @@ final class StatisticServiceImplementation: StatisticService {
 
 extension StatisticServiceImplementation {
     
+    func checkForEndedGameAfterGameReopen(presentAlert: @escaping (AlertKind) -> Void) {
+        if currentGame.questionIndex == 10 {
+            DispatchQueue.main.async(qos: .userInteractive) {
+                presentAlert(.report)
+            }
+        }
+    }
+    
     func resetGameState() {
         currentGame.reset()
     }

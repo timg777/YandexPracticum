@@ -36,7 +36,7 @@ private extension MovieQuizViewController {
         statisticService = StatisticServiceImplementation()
         
         questionFactory?.requestQuestion(statisticService?.currentGame.questionIndex ?? 0)
-        checkForEndedGameAfterGameReopen()
+        statisticService?.checkForEndedGameAfterGameReopen(presentAlert: presentAlert)
     }
 }
 
@@ -103,14 +103,6 @@ private extension MovieQuizViewController {
 
 // MARK: - helpers
 private extension MovieQuizViewController {
-    
-    func checkForEndedGameAfterGameReopen() {
-        if statisticService?.currentGame.questionIndex == 10 {
-            DispatchQueue.main.async(qos: .userInteractive) { [weak self] in
-                self?.presentAlert(kind: .report)
-            }
-        }
-    }
     
     func presentAlert(kind: AlertKind) {
         guard let statisticService else { return }
