@@ -1,14 +1,12 @@
-
 enum AlertKind {
-    case report
-    case error
+    case report, error
     
     var header: String {
         switch self {
         case .report:
             return "Этот раунд окончен!"
         case .error:
-            return "Ошибка"
+            return "Ой"
         }
     }
     
@@ -21,7 +19,7 @@ enum AlertKind {
         case .report:
             return "Сыграть еще раз"
         case .error:
-            return "Попробовать еще раз"
+            return "Повторить"
         }
     }
 }

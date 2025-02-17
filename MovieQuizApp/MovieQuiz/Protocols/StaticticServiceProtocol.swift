@@ -1,12 +1,11 @@
+protocol StatisticService {
+    var currentGame: GameState { get }
+    var totalAccuracy: Double { get }
+    var gamesCount: Int { get }
+    var bestGame: GameResult { get }
 
-protocol StaticticServiceProtocol {
-    var results: [GameResult] { get }
-    var gameState: GameState { get }
-    
-    func incCurrentIndex()
+    func resetGameState()
+    func store(totalQuestions amount: Int)
+    func incCurrentQuestionIndex()
     func incCurrentCorrectAnswers()
-    
-    func backUpCurrentGame(dateString: String)
-    
-    func resetLoadNewState(totalQuestions: Int)
 }

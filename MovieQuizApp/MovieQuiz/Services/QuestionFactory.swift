@@ -1,43 +1,67 @@
 import Foundation
 
-
 final class QuestionFactory: QuestionFactoryProtocol {
     
-    private(set) var availableQuestions: [QuizQuestionModel]?
-    private(set) var currentQuestion: QuizQuestionModel? {
-        didSet {
-            guard oldValue != currentQuestion else { return }
-            receiveNextQuestion(currentQuestion)
-        }
-    }
+    private let availableQuestions: [QuizQuestionModel] = [
+        .init(
+            image: .theGodfather,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true
+        ),
+        .init(
+            image: .theDarkKnight,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true
+        ),
+        .init(
+            image: .killBill,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true
+        ),
+        .init(
+            image: .theAvengers,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true
+        ),
+        .init(
+            image: .deadpool,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true
+        ),
+        .init(
+            image: .theGreenKnight,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: true
+        ),
+        .init(
+            image: .old,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false
+        ),
+        .init(
+            image: .theIceAgeAdventuresOfBuckWild,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false
+        ),
+        .init(
+            image: .tesla,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false
+        ),
+        .init(
+            image: .vivarium,
+            question: "Рейтинг этого фильма больше чем 6?",
+            correctAnswer: false
+        ),
+    ]
     
-    private let moviesLodaer: MoviesLoaderProtocol
-    private weak var delegate: QuestionFactoryDelegate?
+    weak var delegate: QuestionFactoryDelegate?
     
-    init(moviesLoader: MoviesLoaderProtocol, delegate: QuestionFactoryDelegate) {
-        self.moviesLodaer = moviesLoader
+    init(delegate: QuestionFactoryDelegate) {
         self.delegate = delegate
     }
     
-}
-
-extension QuestionFactory {
-    func resetGameState(newQuestions: [QuizQuestionModel]) {
-        availableQuestions = newQuestions
-    }
-    
-    func receiveNextQuestion(_ question: QuizQuestionModel?) {
-        delegate?.didReceiveNextQuestion(question)
-    }
-    
-    func requestNextQuestion(_ index: Int) {
-        setUpNewQuestion(question: availableQuestions?[safe: index])
-    }
-    
-    private func setUpNewQuestion(question: QuizQuestionModel?) {
-        self.currentQuestion = question
-    }
-    func deallocCurrentQuestion() {
-        currentQuestion = nil
+    func requestQuestion(_ index: Int) {
+        delegate?.didReceiveNextQuestion(availableQuestions[safe: index])
     }
 }
