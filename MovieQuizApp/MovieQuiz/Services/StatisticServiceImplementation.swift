@@ -55,7 +55,7 @@ final class StatisticServiceImplementation: StatisticService {
             storage.set(newValue.correctAnswers, forKey: Keys.currentCorrectAnswers.rawValue)
         }
     }
-
+    
 }
 
 extension StatisticServiceImplementation {

@@ -150,10 +150,10 @@ private extension MovieQuizViewController {
         dynamicFilmCoverView.layer.masksToBounds = true
         dynamicFilmCoverView.layer.borderWidth = GlobalConfig.dynamicFilmCoverViewLayerBorderWidth.rawValue
         dynamicFilmCoverView.layer.borderColor = UIColor.clear.cgColor
-        dynamicFilmCoverView.layer.cornerRadius = GlobalConfig.cornerRadius.rawValue
+        dynamicFilmCoverView.layer.cornerRadius = GlobalConfig.posterCornerRadius.rawValue
         
-        negativeButton.layer.cornerRadius = GlobalConfig.cornerRadius.rawValue
-        positiveButton.layer.cornerRadius = GlobalConfig.cornerRadius.rawValue
+        negativeButton.layer.cornerRadius = GlobalConfig.buttonsCornerRadius.rawValue
+        positiveButton.layer.cornerRadius = GlobalConfig.buttonsCornerRadius.rawValue
     }
     
     func initialLabelsSetUp() {
