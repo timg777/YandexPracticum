@@ -4,6 +4,7 @@ protocol StatisticService {
     var gamesCount: Int { get }
     var bestGame: GameResult { get }
 
+    func checkForEndedGameAfterGameReopen(presentAlert: @escaping (AlertKind) -> Void)
     func resetGameState()
     func store(totalQuestions amount: Int)
     func incCurrentQuestionIndex()

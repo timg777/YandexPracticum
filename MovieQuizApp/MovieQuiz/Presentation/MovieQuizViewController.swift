@@ -9,18 +9,21 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private weak var dynamicQuestionLabel: UILabel!
     @IBOutlet private weak var negativeButton: UIButton!
     @IBOutlet private weak var positiveButton: UIButton!
+    @IBOutlet private weak var loadingIndicator: UIActivityIndicatorView!
     
     // MARK: - private variables
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenterProtocol?
     private var statisticService: StatisticService?
-    private let questionsAmount: Int = 10
+    private var movieDataManager: MovieQuizDataManager?
+    private let questionsAmount: Int = 250
     private var currentQuestion: QuizQuestionModel?
     
     // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetUp()
+        tryLoadMovies()
     }
     
 }
@@ -34,14 +37,23 @@ private extension MovieQuizViewController {
         alertPresenter = AlertPresenter(delegate: self)
         questionFactory = QuestionFactory(delegate: self)
         statisticService = StatisticServiceImplementation()
-        
-        questionFactory?.requestQuestion(statisticService?.currentGame.questionIndex ?? 0)
-        checkForEndedGameAfterGameReopen()
+        movieDataManager = MovieQuizDataManagerImplementation(
+            loader: NWService(),
+            parser: MovieQuizModelParser(),
+            delegate: self
+        )
+    }
+    func tryLoadMovies() {
+        showLoadingIndicator()
+        movieDataManager?.loadMovies()
     }
 }
 
-// MARK: - conforming by delegate
-extension MovieQuizViewController: QuestionFactoryDelegate, AlertPresenterDelegate {
+// MARK: - conforming by QuestionFactoryDelegate delegate
+extension MovieQuizViewController: QuestionFactoryDelegate {
+    func didFailConvertURLToImageData(with error: MovieQuizError) {
+        anErrorOccuredScenario(localizedDescription: error.localizedDescription)
+    }
     
     func didReceiveNextQuestion(_ question: QuizQuestionModel?) {
         currentQuestion = question
@@ -52,10 +64,30 @@ extension MovieQuizViewController: QuestionFactoryDelegate, AlertPresenterDelega
         }
         updateUI(question: question)
     }
-    
-    func didTappedAlertButton() {
+}
+
+// MARK: - conforming by AlertPresenterDelegate delegate
+extension MovieQuizViewController: AlertPresenterDelegate {
+    func didTappedAlertResetButton() {
         statisticService?.resetGameState()
         questionFactory?.requestQuestion(0)
+    }
+    func didTappedAlertRetryButton() {
+        tryLoadMovies()
+    }
+}
+
+// MARK: - conforming by MovieQuizDataManagerDelegate delegate
+extension MovieQuizViewController: MovieQuizDataManagerDelegate {
+    func didReceiveError(_ error: Error) {
+        anErrorOccuredScenario(localizedDescription: error.localizedDescription)
+    }
+    
+    func didReceiveMovies(_ movies: [MostPopularMovie]) {
+        hideLoadingIndicator()
+        questionFactory?.movies = movies
+        questionFactory?.requestQuestion(statisticService?.currentGame.questionIndex ?? 0)
+        statisticService?.checkForEndedGameAfterGameReopen(presentAlert: presentAlert)
     }
 }
 
@@ -104,14 +136,6 @@ private extension MovieQuizViewController {
 // MARK: - helpers
 private extension MovieQuizViewController {
     
-    func checkForEndedGameAfterGameReopen() {
-        if statisticService?.currentGame.questionIndex == 10 {
-            DispatchQueue.main.async(qos: .userInteractive) { [weak self] in
-                self?.presentAlert(kind: .report)
-            }
-        }
-    }
-    
     func presentAlert(kind: AlertKind) {
         guard let statisticService else { return }
         alertPresenter?.present(
@@ -121,7 +145,8 @@ private extension MovieQuizViewController {
             accuracy: statisticService.totalAccuracy,
             kind: kind,
             present: present,
-            nil)
+            nil
+        )
     }
     
     func switchButtonsAvailableState() {
@@ -138,16 +163,39 @@ private extension MovieQuizViewController {
         UIView.animate( withDuration: 1 ) { [weak self] in
             guard let self else { return }
             dynamicQuestionLabel.text = question.question
-            dynamicQuizCounterLabel.text = "\((statisticService?.currentGame.questionIndex ?? 0) + 1)/10"
+            dynamicQuizCounterLabel.text = "\((statisticService?.currentGame.questionIndex ?? 0) + 1)/\(questionsAmount)"
         }
         
-        UIView.transition(
-            with: self.dynamicFilmCoverView,
-            duration: 0.3,
-            options: .transitionCrossDissolve
-        ){ [weak self] in
-            self?.dynamicFilmCoverView.image = question.image
+        do {
+            let imageData = try Data(contentsOf: question.imageURL)
+            let image = UIImage(data: imageData)
+            
+            UIView.transition(
+                with: self.dynamicFilmCoverView,
+                duration: 0.3,
+                options: .transitionCrossDissolve
+            ){ [weak self] in
+                self?.dynamicFilmCoverView.image = image
+            }
+        } catch {
+            anErrorOccuredScenario(localizedDescription: "Couldn't load image")
         }
+    }
+    
+    func anErrorOccuredScenario(localizedDescription: String) {
+        loadingIndicator.isHidden = false
+        loadingIndicator.startAnimating()
+        presentAlert(kind: .error(localizedDescription))
+    }
+    
+    func showLoadingIndicator() {
+        loadingIndicator.isHidden = false
+        loadingIndicator.startAnimating()
+    }
+    
+    func hideLoadingIndicator() {
+        loadingIndicator.stopAnimating()
+        loadingIndicator.isHidden = true
     }
 }
 
@@ -158,19 +206,21 @@ private extension MovieQuizViewController {
         dynamicFilmCoverView.layer.masksToBounds = true
         dynamicFilmCoverView.layer.borderWidth = GlobalConfig.dynamicFilmCoverViewLayerBorderWidth.rawValue
         dynamicFilmCoverView.layer.borderColor = UIColor.clear.cgColor
-        dynamicFilmCoverView.layer.cornerRadius = GlobalConfig.cornerRadius.rawValue
+        dynamicFilmCoverView.layer.cornerRadius = GlobalConfig.posterCornerRadius.rawValue
         
-        negativeButton.layer.cornerRadius = GlobalConfig.cornerRadius.rawValue
-        positiveButton.layer.cornerRadius = GlobalConfig.cornerRadius.rawValue
+        negativeButton.layer.cornerRadius = GlobalConfig.buttonsCornerRadius.rawValue
+        positiveButton.layer.cornerRadius = GlobalConfig.buttonsCornerRadius.rawValue
+        
+        loadingIndicator.hidesWhenStopped = true
     }
     
     func initialLabelsSetUp() {
         staticQuestionLabel.text = "Вопрос:"
-        dynamicQuizCounterLabel.text = "?/10"
+        dynamicQuizCounterLabel.text = "?/\(questionsAmount)"
         dynamicQuestionLabel.text = "Загрузка..."
         
-        negativeButton.setTitle( "Нет", for: .normal )
-        positiveButton.setTitle( "Да",  for: .normal )
+        negativeButton.setTitle("Нет", for: .normal)
+        positiveButton.setTitle("Да",  for: .normal)
         
         staticQuestionLabel.textColor = .ysWhite
         dynamicQuizCounterLabel.textColor = .ysWhite

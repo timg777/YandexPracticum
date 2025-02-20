@@ -1,7 +1,7 @@
-import UIKit
+import Foundation
 
 struct QuizQuestionModel {
-    let image: UIImage
+    let imageURL: URL
     let question: String
     let correctAnswer: Bool
 }

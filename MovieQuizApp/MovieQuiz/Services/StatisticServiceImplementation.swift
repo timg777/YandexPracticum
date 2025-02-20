@@ -55,10 +55,18 @@ final class StatisticServiceImplementation: StatisticService {
             storage.set(newValue.correctAnswers, forKey: Keys.currentCorrectAnswers.rawValue)
         }
     }
-
+    
 }
 
 extension StatisticServiceImplementation {
+    
+    func checkForEndedGameAfterGameReopen(presentAlert: @escaping (AlertKind) -> Void) {
+        if currentGame.questionIndex == 10 {
+            DispatchQueue.main.async(qos: .userInteractive) {
+                presentAlert(.report)
+            }
+        }
+    }
     
     func resetGameState() {
         currentGame.reset()

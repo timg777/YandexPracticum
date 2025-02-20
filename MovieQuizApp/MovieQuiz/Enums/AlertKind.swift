@@ -1,25 +1,30 @@
-enum AlertKind {
-    case report, error
+enum AlertKind: Equatable {
+    case report, error(String)
     
     var header: String {
         switch self {
         case .report:
-            return "Этот раунд окончен!"
+            "Этот раунд окончен!"
         case .error:
-            return "Ой"
+            "Ой"
         }
     }
     
-    func body(report: String = "Что-то пошло не так :_(\n Пожалуйста, повторите попытку позже") -> String {
-        return report
+    func body(report: String = "") -> String {
+        switch self {
+        case .report:
+            report
+        case .error(let localizedDescription):
+            "Что-то пошло не так :_(\n\(localizedDescription)\nПожалуйста, повторите попытку позже"
+        }
     }
     
     var buttonText: String {
         switch self {
         case .report:
-            return "Сыграть еще раз"
+            "Сыграть еще раз"
         case .error:
-            return "Повторить"
+            "Повторить"
         }
     }
 }
