@@ -34,7 +34,7 @@ extension AlertPresenter: AlertPresenterProtocol {
         let alert = UIAlertController(title: header, message: body, preferredStyle: .alert)
         let action = UIAlertAction(title: buttonText, style: .cancel) { [weak self] _ in
             guard let self else { return }
-            !isError ? delegate?.didTappedAlertButton() : ()
+            isError ? delegate?.didTappedAlertRetryButton() : delegate?.didTappedAlertResetButton()
             alert.dismiss(animated: true)
         }
         alert.addAction( action )
@@ -62,7 +62,7 @@ extension AlertPresenter: AlertPresenterProtocol {
             header: kind.header,
             body: alertBody,
             buttonText: kind.buttonText,
-            isError: kind == .error
+            isError: kind != .report
         )
         present(alert, true, completion)
     }

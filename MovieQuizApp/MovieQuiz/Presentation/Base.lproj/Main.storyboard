@@ -119,20 +119,27 @@
                                     <constraint firstItem="ts1-4l-Rjm" firstAttribute="centerX" secondItem="Cah-AY-De7" secondAttribute="centerX" id="x3y-F4-V4s"/>
                                 </constraints>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="zRE-e7-h5s">
+                                <rect key="frame" x="182.66666666666666" y="358.66666666666669" width="37" height="37"/>
+                                <color key="color" name="YSWhite"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="Black"/>
                         <constraints>
+                            <constraint firstItem="zRE-e7-h5s" firstAttribute="centerY" secondItem="ts1-4l-Rjm" secondAttribute="centerY" id="8HD-TG-aj8"/>
                             <constraint firstItem="Cah-AY-De7" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="H0v-Zq-5fK"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Cah-AY-De7" secondAttribute="trailing" id="buP-Ij-sjd"/>
                             <constraint firstItem="Cah-AY-De7" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="lwa-VC-QdW"/>
                             <constraint firstItem="Cah-AY-De7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="tDh-iv-xHa"/>
+                            <constraint firstItem="zRE-e7-h5s" firstAttribute="centerX" secondItem="ts1-4l-Rjm" secondAttribute="centerX" id="wIq-qn-nFX"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="dynamicFilmCoverView" destination="ts1-4l-Rjm" id="54U-d2-IZ7"/>
                         <outlet property="dynamicQuestionLabel" destination="AYx-wD-v2Z" id="SXg-b9-zjX"/>
                         <outlet property="dynamicQuizCounterLabel" destination="jP9-Cu-fDL" id="kCi-0l-SDz"/>
+                        <outlet property="loadingIndicator" destination="zRE-e7-h5s" id="Jge-7M-WFe"/>
                         <outlet property="negativeButton" destination="fMa-GO-MEB" id="sQs-gE-Huc"/>
                         <outlet property="positiveButton" destination="jdc-Y5-UUe" id="Wft-yw-MXs"/>
                         <outlet property="staticQuestionLabel" destination="e8D-aP-2F2" id="ubz-kZ-Ml2"/>
@@ -146,6 +153,9 @@
     <resources>
         <namedColor name="Black">
             <color red="0.10199999809265137" green="0.10599999874830246" blue="0.13300000131130219" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YSWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
