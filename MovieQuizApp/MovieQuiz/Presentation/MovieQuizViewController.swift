@@ -16,7 +16,7 @@ final class MovieQuizViewController: UIViewController {
     private var alertPresenter: AlertPresenterProtocol?
     private var statisticService: StatisticService?
     private var movieDataManager: MovieQuizDataManager?
-    private let questionsAmount: Int = 250
+    private let questionsAmount: Int = 10
     private var currentQuestion: QuizQuestionModel?
     
     // MARK: - View Life Cycles
@@ -34,7 +34,7 @@ private extension MovieQuizViewController {
         initialLabelsSetUp()
         initialViewsSetUp()
         
-        alertPresenter = AlertPresenter(delegate: self)
+        alertPresenter = AlertPresenter()
         questionFactory = QuestionFactory(delegate: self)
         statisticService = StatisticServiceImplementation()
         movieDataManager = MovieQuizDataManagerImplementation(
@@ -68,10 +68,11 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
     }
 }
 
-// MARK: - conforming by AlertPresenterDelegate delegate
-extension MovieQuizViewController: AlertPresenterDelegate {
+// MARK: - alert button handler
+extension MovieQuizViewController {
     func didTappedAlertResetButton() {
         statisticService?.resetGameState()
+        questionFactory?.updateQuestionsPool()
         questionFactory?.requestQuestion(0)
     }
     func didTappedAlertRetryButton() {
@@ -90,8 +91,33 @@ extension MovieQuizViewController: MovieQuizDataManagerDelegate {
         }
     }
     
-    func didReceiveError(_ error: Error) {
-        anErrorOccuredScenario(localizedDescription: error.localizedDescription)
+    func didReceiveError(_ error: MovieQuizError) {
+        // MARK: - handling all errors to detailze hot fixes
+        switch error {
+        case .invalidURL(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .invalidResponse(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .invalidData(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .decodeError(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .invalidImageURL(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .noDataHasProvided(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .serverErrorMessage(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+            
+        case .unknown(let string):
+            anErrorOccuredScenario(localizedDescription: string)
+        }
     }
     
     func didReceiveMovies(_ movies: [MostPopularMovie]) {
@@ -156,6 +182,14 @@ private extension MovieQuizViewController {
             accuracy: statisticService.totalAccuracy,
             kind: kind,
             present: present,
+            buttonTapCompletion: { [weak self] in
+                switch kind {
+                case .report:
+                    self?.didTappedAlertResetButton()
+                case .error:
+                    self?.didTappedAlertRetryButton()
+                }
+            },
             nil
         )
     }
@@ -187,19 +221,15 @@ private extension MovieQuizViewController {
     }
     
     func anErrorOccuredScenario(localizedDescription: String) {
-        loadingIndicator.isHidden = false
-        loadingIndicator.startAnimating()
         presentAlert(kind: .error(localizedDescription))
     }
     
     func showLoadingIndicator() {
-        loadingIndicator.isHidden = false
         loadingIndicator.startAnimating()
     }
     
     func hideLoadingIndicator() {
         loadingIndicator.stopAnimating()
-        loadingIndicator.isHidden = true
     }
     
     func setLoadingImageState() {

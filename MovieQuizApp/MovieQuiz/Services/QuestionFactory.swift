@@ -5,10 +5,13 @@ final class QuestionFactory: QuestionFactoryProtocol {
     var movies: [MostPopularMovie]? {
         didSet {
             convertFilmsToQuizQuestions()
+            updateQuestionsPool()
         }
     }
     
     private var availableQuestions: [QuizQuestionModel] = []
+    private var currentQuestionsPool: [QuizQuestionModel] = []
+    private var currentQuestionsPoolPointer: Int = 0
     
     weak var delegate: QuestionFactoryDelegate?
     
@@ -17,7 +20,19 @@ final class QuestionFactory: QuestionFactoryProtocol {
     }
     
     func requestQuestion(_ index: Int) {
-        delegate?.didReceiveNextQuestion(availableQuestions[safe: index])
+        delegate?.didReceiveNextQuestion(currentQuestionsPool[safe: index])
+    }
+    
+    func updateQuestionsPool() {
+        currentQuestionsPoolPointer += 1
+        
+        if currentQuestionsPoolPointer == 25 {
+            currentQuestionsPoolPointer = 0
+            currentQuestionsPool = Array(availableQuestions[0..<10]).shuffled()
+        } else {
+            let bound = currentQuestionsPoolPointer * 10
+            currentQuestionsPool = Array(availableQuestions[bound..<bound + 10]).shuffled()
+        }
     }
     
     func randomQuestionDetails(by rating: String) -> (question: String, correctAnswer: Bool) {

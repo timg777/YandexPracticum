@@ -18,22 +18,27 @@ final class MovieQuizDataManagerImplementation: MovieQuizDataManager {
             switch result {
             case .success(let data):
                 do {
-                    let movies = try parser?.decode(data)
-                    DispatchQueue.main.async { [weak self] in
-                        if let items = movies?.items {
-                            self?.delegate?.didReceiveMovies(items)
-                        } else {
-                            self?.delegate?.didReceiveError(MovieQuizError.noDataHasProvided)
+                    if let movies = try parser?.decode(data) {
+                        DispatchQueue.main.async { [weak self] in
+                            if !movies.errorMessage.isEmpty {
+                                self?.delegate?.didReceiveError(MovieQuizError.serverErrorMessage(movies.errorMessage))
+                            } else {
+                                if !movies.items.isEmpty {
+                                    self?.delegate?.didReceiveMovies(movies.items)
+                                } else {
+                                    self?.delegate?.didReceiveError(MovieQuizError.noDataHasProvided("There is no data"))
+                                }
+                            }
                         }
                     }
                 } catch {
                     DispatchQueue.main.async { [weak self] in
-                        self?.delegate?.didReceiveError(MovieQuizError.decodeError)
+                        self?.delegate?.didReceiveError(MovieQuizError.decodeError("Decoding error"))
                     }
                 }
             case .failure(let error):
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(error)
+                    self?.delegate?.didReceiveError(MovieQuizError.unknown(error.localizedDescription))
                 }
             }
         }
@@ -49,7 +54,7 @@ final class MovieQuizDataManagerImplementation: MovieQuizDataManager {
                 }
             case .failure(let error):
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(error)
+                    self?.delegate?.didReceiveError(MovieQuizError.unknown(error.localizedDescription))
                 }
             }
         }

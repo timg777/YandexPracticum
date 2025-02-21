@@ -14,7 +14,6 @@
 		2D7E1B302D560FBA003FD2B1 /* StaticticServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E1B2F2D560FBA003FD2B1 /* StaticticServiceProtocol.swift */; };
 		2D7E1B322D5610E1003FD2B1 /* QuestionFactoryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E1B312D5610E1003FD2B1 /* QuestionFactoryDelegate.swift */; };
 		2D7E1B3B2D5785D4003FD2B1 /* QuestionFactoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E1B3A2D5785D4003FD2B1 /* QuestionFactoryProtocol.swift */; };
-		2D7E1B3D2D5C6E55003FD2B1 /* AlertPresenterDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E1B3C2D5C6E55003FD2B1 /* AlertPresenterDelegate.swift */; };
 		2D7E1B3F2D5C6E65003FD2B1 /* AlertPresenterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E1B3E2D5C6E65003FD2B1 /* AlertPresenterProtocol.swift */; };
 		2DB2C6A82D6237C1005C7271 /* AlertKind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB2C6A72D6237C1005C7271 /* AlertKind.swift */; };
 		2DB2C6AC2D63303C005C7271 /* GlobalConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB2C6AB2D63303C005C7271 /* GlobalConfig.swift */; };
@@ -46,7 +45,6 @@
 		2D7E1B2F2D560FBA003FD2B1 /* StaticticServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticticServiceProtocol.swift; sourceTree = "<group>"; };
 		2D7E1B312D5610E1003FD2B1 /* QuestionFactoryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryDelegate.swift; sourceTree = "<group>"; };
 		2D7E1B3A2D5785D4003FD2B1 /* QuestionFactoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactoryProtocol.swift; sourceTree = "<group>"; };
-		2D7E1B3C2D5C6E55003FD2B1 /* AlertPresenterDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenterDelegate.swift; sourceTree = "<group>"; };
 		2D7E1B3E2D5C6E65003FD2B1 /* AlertPresenterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertPresenterProtocol.swift; sourceTree = "<group>"; };
 		2DB2C6A72D6237C1005C7271 /* AlertKind.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertKind.swift; sourceTree = "<group>"; };
 		2DB2C6AB2D63303C005C7271 /* GlobalConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConfig.swift; sourceTree = "<group>"; };
@@ -117,7 +115,6 @@
 				2DB2C6F32D67269B005C7271 /* MovieQuizDataManagerDelegate.swift */,
 				2DB2C6F12D672693005C7271 /* MovieQuizDataManager.swift */,
 				2D7E1B3E2D5C6E65003FD2B1 /* AlertPresenterProtocol.swift */,
-				2D7E1B3C2D5C6E55003FD2B1 /* AlertPresenterDelegate.swift */,
 				2D7E1B3A2D5785D4003FD2B1 /* QuestionFactoryProtocol.swift */,
 				2D7E1B312D5610E1003FD2B1 /* QuestionFactoryDelegate.swift */,
 				2D7E1B2F2D560FBA003FD2B1 /* StaticticServiceProtocol.swift */,
@@ -304,7 +301,6 @@
 				2DD76F392D426F6900DF4C33 /* QuestionFactory.swift in Sources */,
 				2D7E1B322D5610E1003FD2B1 /* QuestionFactoryDelegate.swift in Sources */,
 				2DB2C6AC2D63303C005C7271 /* GlobalConfig.swift in Sources */,
-				2D7E1B3D2D5C6E55003FD2B1 /* AlertPresenterDelegate.swift in Sources */,
 				2DB2C6F02D671C90005C7271 /* MovieQuizError.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -462,6 +458,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -495,6 +492,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UIStatusBarHidden = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
