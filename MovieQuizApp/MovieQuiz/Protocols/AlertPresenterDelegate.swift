@@ -1,3 +1,4 @@
 protocol AlertPresenterDelegate: AnyObject {
-    func didTappedAlertButton()
+    func didTappedAlertResetButton()
+    func didTappedAlertRetryButton()
 }
