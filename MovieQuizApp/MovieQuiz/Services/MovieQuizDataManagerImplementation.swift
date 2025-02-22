@@ -54,7 +54,7 @@ final class MovieQuizDataManagerImplementation: MovieQuizDataManager {
                 }
             case .failure(let error):
                 DispatchQueue.main.async { [weak self] in
-                    self?.delegate?.didReceiveError(MovieQuizError.unknown(error.localizedDescription))
+                    self?.delegate?.didReceiveError(MovieQuizError.invalidImageURL(error.localizedDescription))
                 }
             }
         }
