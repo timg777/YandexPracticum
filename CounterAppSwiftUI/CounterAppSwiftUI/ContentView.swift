@@ -12,13 +12,12 @@ struct ContentView: View {
     @State private var counter = 0
     @State private var currentAction: CounterOption = .clear {
         didSet {
-            withAnimation {
-                self.calculate()
-                self.rulesCheck()
-            }
+            calculate()
+            rulesCheck()
         }
     }
-    
+    @State private var isButtonsAvailable = true
+
     @State private var history = "История операций"
     
     var body: some View {
@@ -38,33 +37,37 @@ struct ContentView: View {
                     
                     Button( action: {
                         currentAction = .subtract
-                        
+                        switchButtonsAvailableState()
                     }) {
                         Text("-")
                             .font(.system(size: 40, weight: .bold, design: .rounded))
                     }
                     .buttonStyle(CounterButtonStyle( color: .blue ))
-
+                    .allowsHitTesting(isButtonsAvailable)
+                    
                     Button( action: {
                         currentAction = .add
+                        switchButtonsAvailableState()
                         
                     }) {
                         Text("+")
                             .font(.system(size: 40, weight: .bold, design: .default))
                     }
                     .buttonStyle(CounterButtonStyle( color: .red ))
+                    .allowsHitTesting(isButtonsAvailable)
                     
                 }
                 
                 Button( action: {
                     currentAction = .clear
-                    
+                    switchButtonsAvailableState()
                 }) {
                     Text("Reset")
                         .font(.system(size: 26, weight: .bold, design: .default))
                         .padding(.horizontal)
                 }
                 .buttonStyle(CounterButtonStyle( color: .gray ))
+                .allowsHitTesting(isButtonsAvailable)
                 
             }
             
@@ -91,20 +94,20 @@ struct ContentView: View {
     }
     
     private func calculate() {
-        switch currentAction {
-            
+        withAnimation {
+            switch currentAction {
             case .belowZero:    fallthrough
             case .clear:        counter = 0
             case .add:          counter += 1
             case .subtract:     counter -= 1
-            
+            }
         }
         
         pushHistory()
     }
     
     private func rulesCheck() {
-        self.belowZeroCheck()
+        belowZeroCheck()
     }
     
     private func belowZeroCheck() {
@@ -112,15 +115,19 @@ struct ContentView: View {
             (currentAction, counter) = ( .belowZero, 0 )
         }
     }
-
+    
+    private func switchButtonsAvailableState() {
+        isButtonsAvailable.toggle()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            isButtonsAvailable.toggle()
+        }
+    }
+    
 }
 
 #Preview {
     ContentView()
 }
-
-
-
 
 struct CounterButtonStyle: ButtonStyle {
     
