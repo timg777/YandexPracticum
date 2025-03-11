@@ -9,13 +9,11 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private weak var dynamicQuestionLabel: UILabel!
     @IBOutlet private weak var negativeButton: UIButton!
     @IBOutlet private weak var positiveButton: UIButton!
-    @IBOutlet private weak var loadingIndicator: UIActivityIndicatorView!
     
     // MARK: - private variables
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenterProtocol?
     private var statisticService: StatisticService?
-    private var movieDataManager: MovieQuizDataManager?
     private let questionsAmount: Int = 10
     private var currentQuestion: QuizQuestionModel?
     
@@ -23,7 +21,6 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initialSetUp()
-        tryLoadMovies()
     }
     
 }
@@ -34,26 +31,17 @@ private extension MovieQuizViewController {
         initialLabelsSetUp()
         initialViewsSetUp()
         
-        alertPresenter = AlertPresenter()
+        alertPresenter = AlertPresenter(delegate: self)
         questionFactory = QuestionFactory(delegate: self)
         statisticService = StatisticServiceImplementation()
-        movieDataManager = MovieQuizDataManagerImplementation(
-            loader: NWService(),
-            parser: MovieQuizModelParser(),
-            delegate: self
-        )
-    }
-    func tryLoadMovies() {
-        showLoadingIndicator()
-        movieDataManager?.loadMovies()
+        
+        questionFactory?.requestQuestion(statisticService?.currentGame.questionIndex ?? 0)
+        statisticService?.checkForEndedGameAfterGameReopen(presentAlert: presentAlert)
     }
 }
 
-// MARK: - conforming by QuestionFactoryDelegate delegate
-extension MovieQuizViewController: QuestionFactoryDelegate {
-    func didFailConvertURLToImageData(with error: MovieQuizError) {
-        anErrorOccuredScenario(localizedDescription: error.localizedDescription)
-    }
+// MARK: - conforming by delegate
+extension MovieQuizViewController: QuestionFactoryDelegate, AlertPresenterDelegate {
     
     func didReceiveNextQuestion(_ question: QuizQuestionModel?) {
         currentQuestion = question
@@ -62,69 +50,12 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
             presentAlert(kind: .report)
             return
         }
-        setLoadingImageState()
-        showLoadingIndicator()
-        movieDataManager?.loadImage(url: question.betterQualityImageURL)
+        updateUI(question: question)
     }
-}
-
-// MARK: - alert button handler
-extension MovieQuizViewController {
-    func didTappedAlertResetButton() {
+    
+    func didTappedAlertButton() {
         statisticService?.resetGameState()
-        questionFactory?.updateQuestionsPool()
         questionFactory?.requestQuestion(0)
-    }
-    func didTappedAlertRetryButton() {
-        tryLoadMovies()
-    }
-}
-
-// MARK: - conforming by MovieQuizDataManagerDelegate delegate
-extension MovieQuizViewController: MovieQuizDataManagerDelegate {
-    
-    func didReceiveImageData(_ imageData: Data) {
-        setLoadedImageState()
-        hideLoadingIndicator()
-        if let currentQuestion {
-            updateUI(question: currentQuestion, uiimage: UIImage(data: imageData))
-        }
-    }
-    
-    func didReceiveError(_ error: MovieQuizError) {
-        // MARK: - handling all errors to detailze hot fixes
-        switch error {
-        case .invalidURL(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .invalidResponse(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .invalidData(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .decodeError(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .invalidImageURL(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .noDataHasProvided(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .serverErrorMessage(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-            
-        case .unknown(let string):
-            anErrorOccuredScenario(localizedDescription: string)
-        }
-    }
-    
-    func didReceiveMovies(_ movies: [MostPopularMovie]) {
-        hideLoadingIndicator()
-        questionFactory?.movies = movies
-        questionFactory?.requestQuestion(statisticService?.currentGame.questionIndex ?? 0)
-        statisticService?.checkForEndedGameAfterGameReopen(presentAlert: presentAlert)
     }
 }
 
@@ -182,16 +113,7 @@ private extension MovieQuizViewController {
             accuracy: statisticService.totalAccuracy,
             kind: kind,
             present: present,
-            buttonTapCompletion: { [weak self] in
-                switch kind {
-                case .report:
-                    self?.didTappedAlertResetButton()
-                case .error:
-                    self?.didTappedAlertRetryButton()
-                }
-            },
-            nil
-        )
+            nil)
     }
     
     func switchButtonsAvailableState() {
@@ -204,48 +126,20 @@ private extension MovieQuizViewController {
 // MARK: - ui managing
 private extension MovieQuizViewController {
     
-    func updateUI(question: QuizQuestionModel, uiimage: UIImage?) {
+    func updateUI(question: QuizQuestionModel) {
         UIView.animate( withDuration: 1 ) { [weak self] in
             guard let self else { return }
             dynamicQuestionLabel.text = question.question
-            dynamicQuizCounterLabel.text = "\((statisticService?.currentGame.questionIndex ?? 0) + 1)/\(questionsAmount)"
+            dynamicQuizCounterLabel.text = "\((statisticService?.currentGame.questionIndex ?? 0) + 1)/10"
         }
         
         UIView.transition(
-            with: dynamicFilmCoverView,
+            with: self.dynamicFilmCoverView,
             duration: 0.3,
             options: .transitionCrossDissolve
         ){ [weak self] in
-            self?.dynamicFilmCoverView.image = uiimage
+            self?.dynamicFilmCoverView.image = question.image
         }
-    }
-    
-    func anErrorOccuredScenario(localizedDescription: String) {
-        presentAlert(kind: .error(localizedDescription))
-    }
-    
-    func showLoadingIndicator() {
-        loadingIndicator.startAnimating()
-    }
-    
-    func hideLoadingIndicator() {
-        loadingIndicator.stopAnimating()
-    }
-    
-    func setLoadingImageState() {
-        UIView.transition(
-            with: dynamicFilmCoverView,
-            duration: 0.15) { [weak self] in
-                self?.dynamicFilmCoverView.layer.opacity = 0.3
-            }
-    }
-    
-    func setLoadedImageState() {
-        UIView.transition(
-            with: dynamicFilmCoverView,
-            duration: 0.5) { [weak self] in
-                self?.dynamicFilmCoverView.layer.opacity = 1
-            }
     }
 }
 
@@ -260,17 +154,15 @@ private extension MovieQuizViewController {
         
         negativeButton.layer.cornerRadius = GlobalConfig.buttonsCornerRadius.rawValue
         positiveButton.layer.cornerRadius = GlobalConfig.buttonsCornerRadius.rawValue
-        
-        loadingIndicator.hidesWhenStopped = true
     }
     
     func initialLabelsSetUp() {
         staticQuestionLabel.text = "Вопрос:"
-        dynamicQuizCounterLabel.text = "?/\(questionsAmount)"
+        dynamicQuizCounterLabel.text = "?/10"
         dynamicQuestionLabel.text = "Загрузка..."
         
-        negativeButton.setTitle("Нет", for: .normal)
-        positiveButton.setTitle("Да",  for: .normal)
+        negativeButton.setTitle( "Нет", for: .normal )
+        positiveButton.setTitle( "Да",  for: .normal )
         
         staticQuestionLabel.textColor = .ysWhite
         dynamicQuizCounterLabel.textColor = .ysWhite

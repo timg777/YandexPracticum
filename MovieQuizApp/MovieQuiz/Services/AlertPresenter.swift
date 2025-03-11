@@ -1,6 +1,14 @@
 import UIKit
 
-final class AlertPresenter: AlertPresenterProtocol {
+final class AlertPresenter {
+    weak var delegate: AlertPresenterDelegate?
+    
+    init(delegate: AlertPresenterDelegate) {
+        self.delegate = delegate
+    }
+}
+
+extension AlertPresenter: AlertPresenterProtocol {
     
     private func buildReport(
         currentGame: GameState,
@@ -20,12 +28,13 @@ final class AlertPresenter: AlertPresenterProtocol {
         header: String,
         body: String,
         buttonText: String,
-        buttonTapCompletion: (() -> Void)?
+        isError: Bool
     ) -> UIAlertController {
         
         let alert = UIAlertController(title: header, message: body, preferredStyle: .alert)
-        let action = UIAlertAction(title: buttonText, style: .cancel) { _ in
-            buttonTapCompletion?()
+        let action = UIAlertAction(title: buttonText, style: .cancel) { [weak self] _ in
+            guard let self else { return }
+            !isError ? delegate?.didTappedAlertButton() : ()
             alert.dismiss(animated: true)
         }
         alert.addAction( action )
@@ -39,7 +48,6 @@ final class AlertPresenter: AlertPresenterProtocol {
         accuracy: Double,
         kind: AlertKind,
         present: (UIViewController, Bool, (() -> Void)?) -> Void,
-        buttonTapCompletion: (() -> Void)?,
         _ completion: (() -> Void)? = nil
     ) {
         
@@ -54,9 +62,8 @@ final class AlertPresenter: AlertPresenterProtocol {
             header: kind.header,
             body: alertBody,
             buttonText: kind.buttonText,
-            buttonTapCompletion: buttonTapCompletion
+            isError: kind == .error
         )
         present(alert, true, completion)
     }
-    
 }

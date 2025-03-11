@@ -8,7 +8,6 @@ protocol AlertPresenterProtocol {
         accuracy: Double,
         kind: AlertKind,
         present: (UIViewController, Bool, (() -> Void)?) -> Void,
-        buttonTapCompletion: (() -> Void)?,
         _ completion: (() -> Void)?
     )
 }
