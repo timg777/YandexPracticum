@@ -7,7 +7,7 @@ protocol AlertPresenterProtocol {
         gamesCount: Int,
         accuracy: Double,
         kind: AlertKind,
-        present: (UIViewController, Bool, (() -> Void)?) -> Void,
+        present: @MainActor (UIViewController, Bool, (() -> Void)?) -> Void,
         _ completion: (() -> Void)?
     )
 }

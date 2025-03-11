@@ -31,23 +31,30 @@ extension AlertPresenter: AlertPresenterProtocol {
         isError: Bool
     ) -> UIAlertController {
         
-        let alert = UIAlertController(title: header, message: body, preferredStyle: .alert)
+        var alert = UIAlertController(title: header, message: body, preferredStyle: .alert)
         let action = UIAlertAction(title: buttonText, style: .cancel) { [weak self] _ in
             guard let self else { return }
-            isError ? delegate?.didTappedAlertRetryButton() : delegate?.didTappedAlertResetButton()
+            if isError {
+                delegate?.didTappedAlertRetryButton()
+            } else {
+                delegate?.didTappedAlertResetButton()
+            }
             alert.dismiss(animated: true)
         }
+        action.accessibilityIdentifier = AccessibilityElement.alertOKButton.identifier
         alert.addAction( action )
         return alert
     }
     
+    @MainActor
+    @preconcurrency
     func present(
         currentGame: GameState,
         bestGame: GameResult,
         gamesCount: Int,
         accuracy: Double,
         kind: AlertKind,
-        present: (UIViewController, Bool, (() -> Void)?) -> Void,
+        present: @MainActor (UIViewController, Bool, (() -> Void)?) -> Void,
         _ completion: (() -> Void)? = nil
     ) {
         

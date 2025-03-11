@@ -5,19 +5,56 @@ final class QuestionFactory: QuestionFactoryProtocol {
     var movies: [MostPopularMovie]? {
         didSet {
             convertFilmsToQuizQuestions()
+            updateQuestionsPool()
         }
     }
     
     private var availableQuestions: [QuizQuestionModel] = []
+    private var currentQuestionsPool: [QuizQuestionModel] = []
+    private var currentQuestionsPoolPointer: Int = 0
     
     weak var delegate: QuestionFactoryDelegate?
     
-    init(delegate: QuestionFactoryDelegate) {
+    init(delegate: QuestionFactoryDelegate?) {
         self.delegate = delegate
     }
     
     func requestQuestion(_ index: Int) {
-        delegate?.didReceiveNextQuestion(availableQuestions[safe: index])
+        delegate?.didReceiveNextQuestion(currentQuestionsPool[safe: index])
+    }
+    
+    func updateQuestionsPool() {
+        let questionsAmount = Int(GlobalConfig.questionsAmount.rawValue)
+        let totalQuestionsAmount = Int(GlobalConfig.totalQuestionsAmount.rawValue)
+        currentQuestionsPoolPointer += 1
+        
+        if currentQuestionsPoolPointer == totalQuestionsAmount / questionsAmount {
+            setQuestionPool(byNewBound: false)
+        } else {
+            setQuestionPool(byNewBound: true)
+        }
+    }
+    
+    private func setQuestionPool(byNewBound: Bool) {
+        let questionsAmount = Int(GlobalConfig.questionsAmount.rawValue)
+        var lowerBound: Int
+        var upperBound: Int
+        
+        if byNewBound {
+            let bound = currentQuestionsPoolPointer * questionsAmount
+            lowerBound = bound
+            upperBound = bound + questionsAmount
+        } else {
+            currentQuestionsPoolPointer = 0
+            lowerBound = 0
+            upperBound = questionsAmount
+        }
+        
+        if let questions = availableQuestions[safe: lowerBound..<upperBound] {
+            currentQuestionsPool = questions.shuffled()
+        } else {
+            delegate?.didReceiveNextQuestion(nil)
+        }
     }
     
     func randomQuestionDetails(by rating: String) -> (question: String, correctAnswer: Bool) {
@@ -39,15 +76,18 @@ final class QuestionFactory: QuestionFactoryProtocol {
     
     private func convertFilmsToQuizQuestions() {
         movies?.forEach {
-            let randomQuestionDetails = self.randomQuestionDetails(by: $0.rating)
-            availableQuestions.append(
-                .init(
-                    imageURL: $0.imageURL,
-                    question: randomQuestionDetails.question,
-                    correctAnswer: randomQuestionDetails.correctAnswer
-                )
-            )
+            let question = convert(model: $0)
+            availableQuestions.append(question)
         }
+    }
+    
+    func convert(model: MostPopularMovie) -> QuizQuestionModel {
+        let randomQuestionDetails = self.randomQuestionDetails(by: model.rating)
+        return .init(
+            imageURL: model.imageURL,
+            question: randomQuestionDetails.question,
+            correctAnswer: randomQuestionDetails.correctAnswer
+        )
     }
     
 }

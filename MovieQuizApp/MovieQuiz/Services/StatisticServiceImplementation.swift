@@ -79,7 +79,11 @@ extension StatisticServiceImplementation {
         storage.set(correctAnswersSum, forKey: Keys.correctAnswersSum.rawValue)
         
         if currentGame.correctAnswers > bestGame.correctAnswers {
-            bestGame = .init(correctAnswers: currentGame.correctAnswers, totalQuestions: amount, date: Date().dateTimeString)
+            bestGame = .init(
+                correctAnswers: currentGame.correctAnswers,
+                totalQuestions: amount,
+                date: Date().dateTimeString
+            )
         }
     }
     
