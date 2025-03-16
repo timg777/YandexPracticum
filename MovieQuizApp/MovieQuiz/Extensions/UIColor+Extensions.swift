@@ -1,6 +1,6 @@
 import UIKit
 
-// MARK: - colors
+// MARK: - Extensions + Internal Colors
 extension UIColor {
     static let black = UIColor(named: "Black")
     static let white = UIColor(named: "White")

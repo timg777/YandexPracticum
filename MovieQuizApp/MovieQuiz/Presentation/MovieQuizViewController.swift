@@ -2,7 +2,7 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol {
     
-    // MARK: - IB Outles
+    // MARK: - Outles
     @IBOutlet private weak var staticQuestionLabel: UILabel!
     @IBOutlet private weak var dynamicQuizCounterLabel: UILabel!
     @IBOutlet private weak var dynamicFilmCoverView: UIImageView!
@@ -11,8 +11,8 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     @IBOutlet private weak var positiveButton: UIButton!
     @IBOutlet private weak var loadingIndicator: UIActivityIndicatorView!
     
-    // MARK: - private variables
-    private var presenter: MovieQuizPresenter!
+    // MARK: - Private Properties
+    private var presenter: MovieQuizPresenter?
     
     // MARK: - View Life Cycles
     override func viewDidLoad() {
@@ -21,7 +21,7 @@ final class MovieQuizViewController: UIViewController, MovieQuizViewControllerPr
     }
 }
 
-// MARK: - inital setup
+// MARK: - Extensions + Private Methods (SetUp)
 private extension MovieQuizViewController {
     func initialSetUp() {
         setUpAccessability()
@@ -32,21 +32,19 @@ private extension MovieQuizViewController {
     }
 }
 
-// MARK: - buttons handlers
+// MARK: - Extensions + Private Methods (IBAction)
 private extension MovieQuizViewController {
     
-    // MARK: - IB positive button action
     @IBAction func positiveButtonTapped() {
-        presenter.handleButtonTapped(true)
+        presenter?.handleButtonTapped(true)
     }
-    // MARK: - IB negative button action
     @IBAction func negativeButtonTapped() {
-        presenter.handleButtonTapped(false)
+        presenter?.handleButtonTapped(false)
     }
     
 }
 
-// MARK: - ui managing
+// MARK: - Extensions + Internal UI Updates
 extension MovieQuizViewController {
     
     func updateFilmCoverView(uiimage: UIImage?) {
@@ -99,7 +97,7 @@ extension MovieQuizViewController {
     }
 }
 
-// MARK: - initialization
+// MARK: - Extensions + Private Methods (Initial View SetUp)
 private extension MovieQuizViewController {
     
     func initialViewsSetUp() {
@@ -129,16 +127,10 @@ private extension MovieQuizViewController {
     
     func setUpAccessability() {
         staticQuestionLabel.accessibilityIdentifier = AccessibilityElement.staticQuestionLabel.identifier
-//        staticQuestionLabel.accessibilityLabel = AccessabilityElement.staticQuestionLabel.label
-        
+
         dynamicQuestionLabel.accessibilityIdentifier = AccessibilityElement.dynamicQuestionLabel.identifier
-//        dynamicQuestionLabel.accessibilityLabel = AccessabilityElement.dynamicQuestionLabel.label
-        
         dynamicFilmCoverView.accessibilityIdentifier = AccessibilityElement.dynamicFilmCoverView.identifier
-//        dynamicFilmCoverView.accessibilityLabel = AccessabilityElement.dynamicFilmCoverView.label
-        
         dynamicQuizCounterLabel.accessibilityIdentifier = AccessibilityElement.dynamicQuizCounterLabel.identifier
-//        dynamicQuizCounterLabel.accessibilityLabel = AccessabilityElement.dynamicQuizCounterLabel.label
         
         negativeButton.accessibilityIdentifier = AccessibilityElement.negativeButton.identifier
         negativeButton.accessibilityLabel = AccessibilityElement.negativeButton.label

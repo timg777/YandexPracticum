@@ -1,7 +1,7 @@
 import XCTest
 @testable import MovieQuiz
 
-// MARK: - ArrayTests
+// MARK: - Array Unit Tests
 final class ArrayTests: XCTestCase {
     
     // Given

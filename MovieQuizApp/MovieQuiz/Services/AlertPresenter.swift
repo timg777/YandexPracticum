@@ -1,13 +1,17 @@
 import UIKit
 
 final class AlertPresenter {
+    
+    // MARK: - Internal Properties
     weak var delegate: AlertPresenterDelegate?
     
+    // MARK: - Internal Initializer
     init(delegate: AlertPresenterDelegate) {
         self.delegate = delegate
     }
 }
 
+// MARK: - Extensions + AlertPresenterProtocol Conformance
 extension AlertPresenter: AlertPresenterProtocol {
     
     private func buildReport(

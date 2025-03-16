@@ -1,11 +1,3 @@
-//
-//  DataManagerLoaderTestOption.swift
-//  MovieQuiz
-//
-//  Created by Superior Warden on 09.03.2025.
-//
-
-
 enum DataManagerLoaderTestOption {
     case successFilms
     case failedFilms

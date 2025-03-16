@@ -1,6 +1,7 @@
 import XCTest
 @testable import MovieQuiz
 
+// MARK: - UI Tests
 final class MovieQuizUITests: XCTestCase {
     
     let alertTitleIdentifier = "Этот раунд окончен!"
@@ -92,7 +93,8 @@ final class MovieQuizUITests: XCTestCase {
     }
 }
 
-extension MovieQuizUITests {
+// MARK: - Extensions + Private Helpers
+private extension MovieQuizUITests {
     
     @MainActor
     func screenCastTest(_ buttonName: String) throws {

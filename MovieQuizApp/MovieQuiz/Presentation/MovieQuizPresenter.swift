@@ -1,7 +1,9 @@
 import UIKit
 
+// MARK: - Presenter
 final class MovieQuizPresenter: MovieQuizPresenterProtocol {
     
+    // MARK: - Private Properties
     private weak var viewController: MovieQuizViewControllerProtocol?
     
     private var questionFactory: QuestionFactoryProtocol?
@@ -10,6 +12,7 @@ final class MovieQuizPresenter: MovieQuizPresenterProtocol {
     private var moviesDataManager: DataRouting?
     private var currentQuestion: QuizQuestionModel?
     
+    // MARK: - Internal Initializer
     init(
         viewController: MovieQuizViewControllerProtocol,
         networkService: NWServiceProtocol? = nil
@@ -29,10 +32,9 @@ final class MovieQuizPresenter: MovieQuizPresenterProtocol {
     }
 }
 
-// MARK: - buttons handlers
+// MARK: - Extensions + Internal Helpers (Buttons Handlers)
 extension MovieQuizPresenter {
     
-    // MARK: - any button action handler
     func handleButtonTapped(_ isPositiveButton: Bool) {
         
         let isCorrectAnswer = currentQuestion?.correctAnswer == isPositiveButton
@@ -60,7 +62,7 @@ extension MovieQuizPresenter {
     }
 }
 
-// MARK: - helpers
+// MARK: - Extensions + Internal Helpers (other)
 extension MovieQuizPresenter {
     @MainActor
     @preconcurrency
@@ -83,7 +85,7 @@ extension MovieQuizPresenter {
     }
 }
 
-// MARK: - conforming by QuestionFactoryDelegate delegate
+// MARK: - Extensions + Conforming to QuestionFactoryDelegate
 extension MovieQuizPresenter: QuestionFactoryDelegate {
     func didFailConvertURLToImageData(with error: MovieQuizError) {
         anErrorOccuredScenario(localizedDescription: error.localizedDescription)
@@ -91,23 +93,18 @@ extension MovieQuizPresenter: QuestionFactoryDelegate {
     
     func didReceiveNextQuestion(_ question: QuizQuestionModel?) {
         currentQuestion = question
-        guard let question = question else {
-            statisticService?.store(totalQuestions: Int(GlobalConfig.questionsAmount.rawValue))
-            presentAlert(kind: .report)
+        guard let question else {
+
+            storeAndPresentAlertOnGameEnded()
             return
         }
         viewController?.setLoadingImageState(isLoaded: false)
         viewController?.showLoadingIndicator()
         moviesDataManager?.loadImage(url: question.betterQualityImageURL)
     }
-    
-    func tryLoadMovies() {
-        viewController?.showLoadingIndicator()
-        moviesDataManager?.loadMovies()
-    }
 }
 
-// MARK: - conforming by AlertPresenterDelegate delegate
+// MARK: - Extensions + Conforming to AlertPresenterDelegate
 extension MovieQuizPresenter: AlertPresenterDelegate {
     func didTappedAlertResetButton() {
         statisticService?.resetGameState()
@@ -119,7 +116,7 @@ extension MovieQuizPresenter: AlertPresenterDelegate {
     }
 }
 
-// MARK: - conforming by MovieQuizDataManagerDelegate delegate
+// MARK: - Extensions + Conforming to MovieQuizDataManagerDelegate
 extension MovieQuizPresenter: DataManagerDelegate {
     
     func didReceiveImageData(_ imageData: Data) {
@@ -145,5 +142,18 @@ extension MovieQuizPresenter: DataManagerDelegate {
         questionFactory?.movies = movies
         questionFactory?.requestQuestion(statisticService?.currentGame.questionIndex ?? 0)
         statisticService?.checkForEndedGameAfterGameReopen(presentAlert: presentAlert)
+    }
+}
+
+// MARK: - Extensions + Private Methods
+private extension MovieQuizPresenter {
+    func storeAndPresentAlertOnGameEnded() {
+        statisticService?.store(totalQuestions: Int(GlobalConfig.questionsAmount.rawValue))
+        presentAlert(kind: .report)
+    }
+    
+    func tryLoadMovies() {
+        viewController?.showLoadingIndicator()
+        moviesDataManager?.loadMovies()
     }
 }

@@ -1,6 +1,7 @@
 @testable import MovieQuiz
 import XCTest
 
+// MARK: - DataManager Loader Unit Tests
 final class DataManagerLoaderTests: XCTestCase {
     
     var parser: ModelParser!
@@ -35,8 +36,8 @@ final class DataManagerLoaderTests: XCTestCase {
     }
 }
 
-// MARK: - universal method for all test cases
-extension DataManagerLoaderTests {
+// MARK: - Extensions + Private Methods (universal method for all test cases)
+private extension DataManagerLoaderTests {
     
     func universalTestCase(_ option: DataManagerLoaderTestOption) {
         // Given

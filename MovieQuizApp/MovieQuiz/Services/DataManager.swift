@@ -2,10 +2,13 @@ import Foundation
 
 final class DataManager: DataRouting {
     
+    // MARK: - Internal Properties
     weak var delegate: DataManagerDelegate?
+    
     var loader: (any NWServiceProtocol)?
     var parser: (any ModelParserProtocol)?
     
+    // MARK: - Internal Initializer
     init(
         loader: (any NWServiceProtocol)?,
         parser: (any ModelParserProtocol)?,
@@ -15,6 +18,11 @@ final class DataManager: DataRouting {
         self.loader = loader
         self.parser = parser
     }
+    
+}
+
+// MARK: - Extensions + Internal Methods
+extension DataManager {
     
     func loadMovies() {
         loader?.fetchMovies { [weak self] result in
@@ -58,4 +66,5 @@ final class DataManager: DataRouting {
             }
         }
     }
+    
 }

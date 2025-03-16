@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - array safe index subscript
+// MARK: - Extensions + Internal Array Safe Index Subscript
 extension Array {
     subscript(safe index: Index) -> Element? {
         indices ~= index ? self[index] : nil
