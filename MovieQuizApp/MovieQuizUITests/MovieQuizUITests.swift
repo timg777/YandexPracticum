@@ -4,13 +4,15 @@ import XCTest
 // MARK: - UI Tests
 final class MovieQuizUITests: XCTestCase {
     
-    let alertTitleIdentifier = "Этот раунд окончен!"
-    let alertOKButtonIdentifier = AccessibilityElement.alertOKButton.identifier
-    let counterLabel = AccessibilityElement.dynamicQuizCounterLabel.identifier
-    let positiveButtonElementName = AccessibilityElement.positiveButton.identifier
-    let negativeButtonElementName = AccessibilityElement.negativeButton.identifier
-    let filmCoverLabel = AccessibilityElement.dynamicFilmCoverView.identifier
+    // MARK: - Private Constants
+    private let alertTitleIdentifier = "Этот раунд окончен!"
+    private let alertOKButtonIdentifier = AccessibilityElement.alertOKButton.identifier
+    private let counterLabel = AccessibilityElement.dynamicQuizCounterLabel.identifier
+    private let positiveButtonElementName = AccessibilityElement.positiveButton.identifier
+    private let negativeButtonElementName = AccessibilityElement.negativeButton.identifier
+    private let filmCoverLabel = AccessibilityElement.dynamicFilmCoverView.identifier
     
+    // MARK: - Current App
     var app: XCUIApplication!
 
     override func setUpWithError() throws {
@@ -29,6 +31,7 @@ final class MovieQuizUITests: XCTestCase {
         app = nil
     }
 
+    // MARK: - Test Cases
     @MainActor
     func testScreenCastPositiveButtonTapped() throws {
         try screenCastTest(positiveButtonElementName)
@@ -57,21 +60,34 @@ final class MovieQuizUITests: XCTestCase {
         
         let firstButtonsAvaialableState =
         app.buttons[positiveButtonElementName].isEnabled && app.buttons[negativeButtonElementName].isEnabled
-        XCTAssertTrue(firstButtonsAvaialableState)
+        XCTAssertTrue(firstButtonsAvaialableState, "buttons available state must be true at start")
         
         app.buttons[positiveButtonElementName].tap()
-        let secondButtonsAvaialableState =
-        app.buttons[positiveButtonElementName].isEnabled && app.buttons[negativeButtonElementName].isEnabled
-        XCTAssertFalse(secondButtonsAvaialableState)
+        let positiveButtonAvailabilityState = app.buttons[positiveButtonElementName].isEnabled
+        let negativeButtonAvailabilityState = app.buttons[negativeButtonElementName].isEnabled
+        let secondButtonsAvaialableState = positiveButtonAvailabilityState && negativeButtonAvailabilityState
+        XCTAssertFalse(secondButtonsAvaialableState, "buttons available state must be false after screen cast")
         sleep(2)
         
         let thirdButtonsAvaialableState =
         app.buttons[positiveButtonElementName].isEnabled && app.buttons[negativeButtonElementName].isEnabled
-        XCTAssertTrue(thirdButtonsAvaialableState)
+        XCTAssertTrue(thirdButtonsAvaialableState, "buttons available state must be true after animation")
         
-        XCTAssertEqual(firstButtonsAvaialableState, thirdButtonsAvaialableState)
-        XCTAssertNotEqual(secondButtonsAvaialableState, firstButtonsAvaialableState)
-        XCTAssertNotEqual(secondButtonsAvaialableState, thirdButtonsAvaialableState)
+        XCTAssertEqual(
+            firstButtonsAvaialableState,
+            thirdButtonsAvaialableState,
+            "buttons available state must be equal"
+        )
+        XCTAssertNotEqual(
+            secondButtonsAvaialableState,
+            firstButtonsAvaialableState,
+            "buttons available state must be not equal"
+        )
+        XCTAssertNotEqual(
+            secondButtonsAvaialableState,
+            thirdButtonsAvaialableState,
+            "buttons available state must be not equal"
+        )
     }
     
     @MainActor
@@ -82,14 +98,14 @@ final class MovieQuizUITests: XCTestCase {
         try validateAlert()
         
         let firstCounterLabel = app.staticTexts[counterLabel].label
-        XCTAssertEqual(firstCounterLabel, "10/10")
+        XCTAssertEqual(firstCounterLabel, "10/10", "counter label must be 10/10 on end")
         
         app.alerts[alertTitleIdentifier].buttons.allElementsBoundByIndex[0].tap()
         try checkAlertExists(false)
         
         let secondCounterLabel = app.staticTexts[counterLabel].label
-        XCTAssertNotEqual(firstCounterLabel, secondCounterLabel)
-        XCTAssertEqual(secondCounterLabel, "1/10")
+        XCTAssertNotEqual(firstCounterLabel, secondCounterLabel, "counter label must be different on end and on start")
+        XCTAssertEqual(secondCounterLabel, "1/10", "counter label must be 1/10 on start")
     }
 }
 
@@ -109,7 +125,7 @@ private extension MovieQuizUITests {
         let secondPoster = app.images[filmCoverLabel]
         let secondPosterData = secondPoster.screenshot().pngRepresentation
         
-        XCTAssertNotEqual(firstPosterData, secondPosterData)
+        XCTAssertNotEqual(firstPosterData, secondPosterData, "images must be different")
     }
     
     @MainActor
@@ -123,14 +139,14 @@ private extension MovieQuizUITests {
         
         let secondIndexLabel = app.staticTexts[counterLabel].label
         
-        XCTAssertNotEqual(firstIndexLabel, secondIndexLabel)
+        XCTAssertNotEqual(firstIndexLabel, secondIndexLabel, "counter index must be different")
     }
     
     @MainActor
     func checkAlertExists(_ exists: Bool) throws {
         sleep(2)
         let alert = app.alerts[alertTitleIdentifier]
-        XCTAssertEqual(alert.exists, exists)
+        XCTAssertEqual(alert.exists, exists, "alert must \(exists ? "exist" : "not exist")")
     }
     
     @MainActor
@@ -145,18 +161,18 @@ private extension MovieQuizUITests {
     func validateAlert() throws {
         sleep(2)
         let secondAlert = app.alerts[alertTitleIdentifier]
-        XCTAssertTrue(secondAlert.exists)
+        XCTAssertTrue(secondAlert.exists, "alert must exist")
         
         let titleText = secondAlert.label
-        XCTAssertEqual(titleText, alertTitleIdentifier)
+        XCTAssertEqual(titleText, alertTitleIdentifier, "alert title must be correct")
         
         let messageText = secondAlert.staticTexts.allElementsBoundByIndex[1].label
         
         let alertMessageTextIsValid = isMessageValid(message: messageText)
-        XCTAssertTrue(alertMessageTextIsValid)
+        XCTAssertTrue(alertMessageTextIsValid, "alert message must be correct")
         
         let okButton = secondAlert.buttons[alertOKButtonIdentifier]
-        XCTAssertEqual(okButton.label, "Сыграть еще раз")
+        XCTAssertEqual(okButton.label, "Сыграть еще раз", "ok button label must be correct")
     }
     
     @MainActor

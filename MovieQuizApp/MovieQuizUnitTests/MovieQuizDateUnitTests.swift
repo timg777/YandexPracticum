@@ -15,7 +15,7 @@ final class DateTests: XCTestCase {
         let testDateTimeString = date.dateTimeString
         
         // Then
-        XCTAssertEqual(testDateTimeString, expectedDateTimeString)
+        XCTAssertEqual(testDateTimeString, expectedDateTimeString, "dates must be equal")
     }
 
 }

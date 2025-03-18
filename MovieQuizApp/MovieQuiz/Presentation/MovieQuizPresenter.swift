@@ -19,7 +19,7 @@ final class MovieQuizPresenter: MovieQuizPresenterProtocol {
     ) {
         self.viewController = viewController
         
-        alertPresenter = AlertPresenter(delegate: self)
+        alertPresenter = AlertPresenter()
         questionFactory = QuestionFactory(delegate: self)
         statisticService = StatisticServiceImplementation()
         moviesDataManager = DataManager(
@@ -67,16 +67,29 @@ extension MovieQuizPresenter {
     @MainActor
     @preconcurrency
     func presentAlert(kind: AlertKind) {
-        guard let statisticService, let viewController else { return }
-        alertPresenter?.present(
-            currentGame: statisticService.currentGame,
-            bestGame: statisticService.bestGame,
-            gamesCount: statisticService.gamesCount,
-            accuracy: statisticService.totalAccuracy,
-            kind: kind,
-            present: viewController.present,
-            nil
-        )
+        if let statisticService,
+            let viewController,
+            let questionFactory {
+            alertPresenter?.present(
+                currentGame: statisticService.currentGame,
+                bestGame: statisticService.bestGame,
+                gamesCount: statisticService.gamesCount,
+                accuracy: statisticService.totalAccuracy,
+                kind: kind,
+                present: viewController.present,
+                { [weak self] in
+                    guard let self else { return }
+                    switch kind {
+                    case .report:
+                        statisticService.resetGameState()
+                        questionFactory.updateQuestionsPool()
+                        questionFactory.requestQuestion(0)
+                    case .error(_):
+                        tryLoadMovies()
+                    }
+                }
+            )
+        }
     }
     
     func anErrorOccuredScenario(localizedDescription: String) {
@@ -104,17 +117,6 @@ extension MovieQuizPresenter: QuestionFactoryDelegate {
     }
 }
 
-// MARK: - Extensions + Conforming to AlertPresenterDelegate
-extension MovieQuizPresenter: AlertPresenterDelegate {
-    func didTappedAlertResetButton() {
-        statisticService?.resetGameState()
-        questionFactory?.updateQuestionsPool()
-        questionFactory?.requestQuestion(0)
-    }
-    func didTappedAlertRetryButton() {
-        tryLoadMovies()
-    }
-}
 
 // MARK: - Extensions + Conforming to MovieQuizDataManagerDelegate
 extension MovieQuizPresenter: DataManagerDelegate {
@@ -133,7 +135,7 @@ extension MovieQuizPresenter: DataManagerDelegate {
         }
     }
     
-    func didReceiveError(_ error: Error) {
+    func didReceiveError(_ error: MovieQuizError) {
         anErrorOccuredScenario(localizedDescription: error.localizedDescription)
     }
     

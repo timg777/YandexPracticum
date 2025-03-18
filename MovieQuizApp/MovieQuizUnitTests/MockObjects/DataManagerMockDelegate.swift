@@ -8,12 +8,12 @@ final class DataManagerMockDelegate: DataManagerDelegate {
     
     var didRecivedAnswerCallback: (() -> Void)?
     
-    func didReceiveError(_ error: any Error) {
+    func didReceiveError(_ error: MovieQuizError) {
         didFailLoadingCalled = true
         didRecivedAnswerCallback?()
     }
     
-    func didReceiveMovies(_ movies: [MovieQuiz.MostPopularMovie]) {
+    func didReceiveMovies(_ movies: [MostPopularMovie]) {
         didReceiveMoviesCalled = true
         didRecivedAnswerCallback?()
     }
