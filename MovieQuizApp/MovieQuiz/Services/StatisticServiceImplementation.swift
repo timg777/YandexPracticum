@@ -2,6 +2,7 @@ import Foundation
 
 final class StatisticServiceImplementation: StatisticService {
     
+    // MARK: - Private Enum Storage Keys
     private enum Keys: String {
         case currentCorrectAnswers
         case currentQuestionIndex
@@ -12,13 +13,16 @@ final class StatisticServiceImplementation: StatisticService {
         case bestGameScore
     }
     
+    // MARK: - Private Constants
     private let storage: UserDefaults = .standard
     
+    // MARK: - Internal Calculated Variables
     var totalAccuracy: Double {
         let correctAnswersSum = storage.integer(forKey: Keys.correctAnswersSum.rawValue)
         return Double(correctAnswersSum) / Double(gamesCount) * 10
     }
     
+    // MARK: - Private Properties
     private(set) var gamesCount: Int {
         get {
             storage.integer(forKey: Keys.gamesCount.rawValue)
@@ -58,6 +62,7 @@ final class StatisticServiceImplementation: StatisticService {
     
 }
 
+// MARK: - Extensions + Helpers
 extension StatisticServiceImplementation {
     
     func checkForEndedGameAfterGameReopen(presentAlert: @escaping (AlertKind) -> Void) {
@@ -79,7 +84,11 @@ extension StatisticServiceImplementation {
         storage.set(correctAnswersSum, forKey: Keys.correctAnswersSum.rawValue)
         
         if currentGame.correctAnswers > bestGame.correctAnswers {
-            bestGame = .init(correctAnswers: currentGame.correctAnswers, totalQuestions: amount, date: Date().dateTimeString)
+            bestGame = .init(
+                correctAnswers: currentGame.correctAnswers,
+                totalQuestions: amount,
+                date: Date().dateTimeString
+            )
         }
     }
     

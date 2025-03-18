@@ -1,0 +1,7 @@
+disabled_rules: # правила, которые вы хотите отключить
+  - trailing_whitespace  
+included: # пути к файлам, которые нужно проверять
+ 
+excluded: # пути к файлам, которые нужно исключить
+  - Carthage
+  - Pods

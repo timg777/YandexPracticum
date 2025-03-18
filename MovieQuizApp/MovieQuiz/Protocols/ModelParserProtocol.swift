@@ -1,5 +1,5 @@
 import Foundation
 
-protocol MovieQuizModelParserProtocol {
+protocol ModelParserProtocol {
     func decode(_ data: Data) throws -> MostPopularMovies
 }

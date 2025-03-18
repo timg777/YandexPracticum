@@ -36,5 +36,7 @@
 ehthumbs.db
 Thumbs.db
 
-*.xcodeproj
+
 xcuserdata
+*.xcodeproj
+*.pbxproj

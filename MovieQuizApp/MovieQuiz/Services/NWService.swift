@@ -1,7 +1,11 @@
 import UIKit
 
 final class NWService: NWServiceProtocol {
-    
+    // MARK: - NWService stuff here
+}
+
+// MARK: - Extensions + Internal Methods
+extension NWService {
     func fetchMovies(_ handler: @escaping (Result<Data, Error>) -> Void) {
         
         guard let url = buildURL() else {
@@ -61,10 +65,9 @@ final class NWService: NWServiceProtocol {
         
         task.resume()
     }
-    
 }
 
-// MARK: - private builders
+// MARK: - Extensions + Private Builders
 extension NWService {
     
     private func buildURL() -> URL? {

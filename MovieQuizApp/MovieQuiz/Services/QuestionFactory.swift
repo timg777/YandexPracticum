@@ -2,6 +2,9 @@ import Foundation
 
 final class QuestionFactory: QuestionFactoryProtocol {
     
+    // MARK: - Internal Proprties
+    weak var delegate: QuestionFactoryDelegate?
+    
     var movies: [MostPopularMovie]? {
         didSet {
             convertFilmsToQuizQuestions()
@@ -9,29 +12,33 @@ final class QuestionFactory: QuestionFactoryProtocol {
         }
     }
     
+    // MARK: - Private Properties
     private var availableQuestions: [QuizQuestionModel] = []
     private var currentQuestionsPool: [QuizQuestionModel] = []
     private var currentQuestionsPoolPointer: Int = 0
     
-    weak var delegate: QuestionFactoryDelegate?
-    
-    init(delegate: QuestionFactoryDelegate) {
+    // MARK: - Initializer
+    init(delegate: QuestionFactoryDelegate?) {
         self.delegate = delegate
     }
-    
+}
+
+// MARK: - Extension + Internal Methods
+extension QuestionFactory {
     func requestQuestion(_ index: Int) {
         delegate?.didReceiveNextQuestion(currentQuestionsPool[safe: index])
     }
     
     func updateQuestionsPool() {
+
+        let questionsAmount = Int(GlobalConfig.questionsAmount.rawValue)
+        let totalQuestionsAmount = Int(GlobalConfig.totalQuestionsAmount.rawValue)
         currentQuestionsPoolPointer += 1
         
-        if currentQuestionsPoolPointer == 25 {
-            currentQuestionsPoolPointer = 0
-            currentQuestionsPool = Array(availableQuestions[0..<10]).shuffled()
+        if currentQuestionsPoolPointer == totalQuestionsAmount / questionsAmount {
+            setQuestionPool(byNewBound: false)
         } else {
-            let bound = currentQuestionsPoolPointer * 10
-            currentQuestionsPool = Array(availableQuestions[bound..<bound + 10]).shuffled()
+            setQuestionPool(byNewBound: true)
         }
     }
     
@@ -52,17 +59,44 @@ final class QuestionFactory: QuestionFactoryProtocol {
         return (question, correctAnswer)
     }
     
-    private func convertFilmsToQuizQuestions() {
-        movies?.forEach {
-            let randomQuestionDetails = self.randomQuestionDetails(by: $0.rating)
-            availableQuestions.append(
-                .init(
-                    imageURL: $0.imageURL,
-                    question: randomQuestionDetails.question,
-                    correctAnswer: randomQuestionDetails.correctAnswer
-                )
-            )
+    func convert(model: MostPopularMovie) -> QuizQuestionModel {
+        let randomQuestionDetails = self.randomQuestionDetails(by: model.rating)
+        return .init(
+            imageURL: model.imageURL,
+            question: randomQuestionDetails.question,
+            correctAnswer: randomQuestionDetails.correctAnswer
+        )
+    }
+}
+
+// MARK: - Extensions + Private Methods
+private extension QuestionFactory {
+    func setQuestionPool(byNewBound: Bool) {
+        let questionsAmount = Int(GlobalConfig.questionsAmount.rawValue)
+        var lowerBound: Int
+        var upperBound: Int
+        
+        if byNewBound {
+            let bound = currentQuestionsPoolPointer * questionsAmount
+            lowerBound = bound
+            upperBound = bound + questionsAmount
+        } else {
+            currentQuestionsPoolPointer = 0
+            lowerBound = 0
+            upperBound = questionsAmount
+        }
+        
+        if let questions = availableQuestions[safe: lowerBound..<upperBound] {
+            currentQuestionsPool = questions.shuffled()
+        } else {
+            delegate?.didReceiveNextQuestion(nil)
         }
     }
     
+    func convertFilmsToQuizQuestions() {
+        movies?.forEach {
+            let question = convert(model: $0)
+            availableQuestions.append(question)
+        }
+    }
 }

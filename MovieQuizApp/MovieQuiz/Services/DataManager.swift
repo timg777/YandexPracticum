@@ -1,16 +1,28 @@
 import Foundation
 
-final class MovieQuizDataManagerImplementation: MovieQuizDataManager {
+final class DataManager: DataRouting {
     
-    weak var delegate: MovieQuizDataManagerDelegate?
+    // MARK: - Internal Properties
+    weak var delegate: DataManagerDelegate?
+    
     var loader: (any NWServiceProtocol)?
-    var parser: (any MovieQuizModelParserProtocol)?
+    var parser: (any ModelParserProtocol)?
     
-    init(loader: (any NWServiceProtocol)?, parser: (any MovieQuizModelParserProtocol)?, delegate: MovieQuizDataManagerDelegate?) {
+    // MARK: - Internal Initializer
+    init(
+        loader: (any NWServiceProtocol)?,
+        parser: (any ModelParserProtocol)?,
+        delegate: DataManagerDelegate?
+    ) {
         self.delegate = delegate
         self.loader = loader
         self.parser = parser
     }
+    
+}
+
+// MARK: - Extensions + Internal Methods
+extension DataManager {
     
     func loadMovies() {
         loader?.fetchMovies { [weak self] result in
