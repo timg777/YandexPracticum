@@ -27,7 +27,6 @@ private extension MovieQuizViewController {
         setUpAccessability()
         initialLabelsSetUp()
         initialViewsSetUp()
-        
         presenter = MovieQuizPresenter(viewController: self)
     }
 }

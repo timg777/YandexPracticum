@@ -1,14 +1,9 @@
 import UIKit
 
 final class AlertPresenter {
+
+    // MARK: - AlertPresenter staff here
     
-    // MARK: - Internal Properties
-    weak var delegate: AlertPresenterDelegate?
-    
-    // MARK: - Internal Initializer
-    init(delegate: AlertPresenterDelegate) {
-        self.delegate = delegate
-    }
 }
 
 // MARK: - Extensions + AlertPresenterProtocol Conformance
@@ -32,17 +27,13 @@ extension AlertPresenter: AlertPresenterProtocol {
         header: String,
         body: String,
         buttonText: String,
-        isError: Bool
+        buttonTapCompletion: (() -> Void)?
     ) -> UIAlertController {
         
-        var alert = UIAlertController(title: header, message: body, preferredStyle: .alert)
+        let alert = UIAlertController(title: header, message: body, preferredStyle: .alert)
         let action = UIAlertAction(title: buttonText, style: .cancel) { [weak self] _ in
             guard let self else { return }
-            if isError {
-                delegate?.didTappedAlertRetryButton()
-            } else {
-                delegate?.didTappedAlertResetButton()
-            }
+            buttonTapCompletion?()
             alert.dismiss(animated: true)
         }
         action.accessibilityIdentifier = AccessibilityElement.alertOKButton.identifier
@@ -73,8 +64,9 @@ extension AlertPresenter: AlertPresenterProtocol {
             header: kind.header,
             body: alertBody,
             buttonText: kind.buttonText,
-            isError: kind != .report
+            buttonTapCompletion: completion
         )
-        present(alert, true, completion)
+        present(alert, true, nil)
     }
+    
 }

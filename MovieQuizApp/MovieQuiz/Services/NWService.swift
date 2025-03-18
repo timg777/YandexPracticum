@@ -9,7 +9,7 @@ extension NWService {
     func fetchMovies(_ handler: @escaping (Result<Data, Error>) -> Void) {
         
         guard let url = buildURL() else {
-            handler(.failure(MovieQuizError.invalidURL))
+            handler(.failure(MovieQuizError.invalidURL("URL not built correctly")))
             return
         }
         let request = buildRequest(url: url)
@@ -27,12 +27,12 @@ extension NWService {
                 if let data = data {
                     handler(.success(data))
                 } else {
-                    handler(.failure(MovieQuizError.invalidData))
+                    handler(.failure(MovieQuizError.invalidData("No data returned")))
                     return
                 }
                 
             } else {
-                handler(.failure(MovieQuizError.invalidResponse))
+                handler(.failure(MovieQuizError.invalidResponse("No response")))
                 return
             }
             
@@ -55,11 +55,11 @@ extension NWService {
                 if let data = data {
                     handler(.success(data))
                 } else {
-                    handler(.failure(MovieQuizError.invalidData))
+                    handler(.failure(MovieQuizError.invalidData("No data returned")))
                     return
                 }
             } else {
-                handler(.failure(MovieQuizError.invalidImageURL))
+                handler(.failure(MovieQuizError.invalidImageURL("Bad image URL")))
             }
         }
         

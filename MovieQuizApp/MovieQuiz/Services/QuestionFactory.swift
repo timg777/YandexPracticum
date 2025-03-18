@@ -30,6 +30,7 @@ extension QuestionFactory {
     }
     
     func updateQuestionsPool() {
+
         let questionsAmount = Int(GlobalConfig.questionsAmount.rawValue)
         let totalQuestionsAmount = Int(GlobalConfig.totalQuestionsAmount.rawValue)
         currentQuestionsPoolPointer += 1
